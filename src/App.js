@@ -3,6 +3,7 @@ import axios from "axios";
 
 const App = () => {
   const [image, setImage] = useState(null); // Selected image
+  const [imageName, setImageName] = useState(""); // Image name
   const [preview, setPreview] = useState(""); // Preview URL
   const [resultImage, setResultImage] = useState(""); // Result image URL
   const [loading, setLoading] = useState(false); // Loading state
@@ -14,15 +15,26 @@ const App = () => {
     setPreview(URL.createObjectURL(file)); // Generate preview URL
   };
 
-  // Upload the image to the server
+  // Handle image name input
+  const handleImageNameChange = (e) => {
+    setImageName(e.target.value);
+  };
+
+  // Upload the image and name to the server
   const handleUpload = async () => {
     if (!image) {
       alert("Please select an image first!");
       return;
     }
 
+    if (!imageName.trim()) {
+      alert("Please enter a name for the image!");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", image);
+    formData.append("name", imageName);
 
     try {
       setLoading(true);
@@ -70,6 +82,13 @@ const App = () => {
             <img src={preview} alt="Preview" style={{ width: "200px" }} />
           </div>
         )}
+        <input
+          type="text"
+          placeholder="Enter image name"
+          value={imageName}
+          onChange={handleImageNameChange}
+          style={{ margin: "10px 0", display: "block" }}
+        />
         <button onClick={handleUpload} disabled={loading}>
           {loading ? "Uploading..." : "Upload Image"}
         </button>
